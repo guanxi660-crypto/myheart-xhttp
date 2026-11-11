@@ -609,7 +609,12 @@ def common_headers():
 
 
 async def handle_root(writer):
-    await write_response(writer, 200, [("Content-Type", "text/plain")], b"Hello, World\n")
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.html"), "rb") as f:
+            html = f.read()
+        await write_response(writer, 200, [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "no-store")], html)
+    except Exception:
+        await write_response(writer, 200, [("Content-Type", "text/plain")], b"Hello, World\n")
 
 
 async def handle_sub(writer):
