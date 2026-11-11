@@ -505,6 +505,13 @@ func getISPInfo() string {
 func handleRequest(w http.ResponseWriter, r *http.Request) {
 	// root path
 	if r.URL.Path == "/" {
+		html, err := os.ReadFile("index.html")
+		if err == nil {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.Header().Set("Cache-Control", "no-store")
+			w.Write(html)
+			return
+		}
 		w.Header().Set("Content-Type", "text/plain")
 		fmt.Fprint(w, "Hello, World\n")
 		return
