@@ -408,10 +408,13 @@ serve(
     };
 
     if (path === "/") { 
-      return new Response("Hello, World\n", 
-      { status: 200, 
-        headers: { "Content-Type": "text/plain" }, }); 
-    } 
+      try {
+        const html = await Deno.readTextFile(new URL("./index.html", import.meta.url).pathname);
+        return new Response(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
+      } catch (e) {
+        return new Response("Hello, World\n", { status: 200, headers: { "Content-Type": "text/plain" } });
+      }
+    }
 
     if (path === `/${SUB_PATH}`) {
       const vlessURL = `vless://${UUID}@${IP}:443?encryption=none&security=tls&sni=${IP}&fp=chrome&allowInsecure=1&type=xhttp&host=${IP}&path=${SETTINGS.XPATH}&mode=packet-up#${NAME}-${ISP}`;
